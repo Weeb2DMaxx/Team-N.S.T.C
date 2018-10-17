@@ -35,7 +35,7 @@ int playerDataGenerator(int playerCount) {
 			case 'b':
 				piecePosition[a] = -2;
 				break;
-			case 'c':
+			case 'g':
 				piecePosition[a] = -3;
 				break;
 			case 'y':
@@ -54,7 +54,7 @@ int boardGenerator() {
 		gameBoard[a] = a;
 		a++;
 		b++;
-	} while (b < 83);
+	} while (b < 84);
 	return 0;
 }
 int playerMovement(int pieceNumber, int movementLeft) {
