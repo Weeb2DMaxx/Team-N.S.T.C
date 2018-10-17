@@ -1,1 +1,208 @@
-adjkls
+#include <iostream>
+
+
+int playerNumGenerator(int);
+int playerDataGenerator(int);
+char playerColor(int);
+int boardGenerator();
+int main();
+int playerMovement(int, int);
+int checkValidOrKillMovement(int, int);
+
+int playerCount = 2;
+char teamColor[] = {'r', 'b', 'g', 'y'};
+int pieceIdentifier[16] = { 999,999,999,999,999,999,999,999,999,999,999,999,999,999,999,999 };
+int piecePosition[16] = { 999,999,999,999,999,999,999,999,999,999,999,999,999,999,999,999 };
+int sliders[] = { 57, 0, 5, 9, 12, 15, 20, 24, 27, 30, 35, 39, 42, 45, 50, 54 };
+int gameBoard[84] = {};
+
+int playerNumGenerator (int a) {
+	static int pieceNumber = 0;
+	pieceIdentifier[a] = pieceNumber;
+	pieceNumber++;
+	return 0;
+}
+char playerColor(int pieceNum) {
+	return teamColor[pieceNum / 4];
+}
+int playerDataGenerator(int playerCount) {
+	for (int a = 0; a < (playerCount * 4); a++) {
+		playerNumGenerator(a);
+		switch (playerColor(a)) {
+			case 'r':
+				piecePosition[a] = -1;
+				break;
+			case 'b':
+				piecePosition[a] = -2;
+				break;
+			case 'c':
+				piecePosition[a] = -3;
+				break;
+			case 'y':
+				piecePosition[a] = -4;
+				break;
+		}
+	}
+
+
+	return 0;
+}
+int boardGenerator() {
+	int b = 0;
+	do {
+		static int a = 0;
+		gameBoard[a] = a;
+		a++;
+		b++;
+	} while (b < 83);
+	return 0;
+}
+int playerMovement(int pieceNumber, int movementLeft) {
+	int originalPositionForIllegalReset = piecePosition[pieceNumber];
+	if (piecePosition[pieceNumber] == 66 || piecePosition[pieceNumber] == 72 || piecePosition[pieceNumber] == 78 || piecePosition[pieceNumber] == 84) {
+		movementLeft = 0;
+	}	
+	if (movementLeft > 0) { 
+		for (int x = 0; x < movementLeft; x++) {
+			piecePosition[pieceNumber] += 1;
+			switch (playerColor(pieceNumber)) {
+				case 'r':
+					if (piecePosition[pieceNumber] == 59) {
+						piecePosition[pieceNumber] == 61;
+					}
+				case 'b':
+					if (piecePosition[pieceNumber] == 14) {
+						piecePosition[pieceNumber] == 67;
+					}
+				case 'g':
+					if (piecePosition[pieceNumber] == 29) {
+						piecePosition[pieceNumber] == 73;
+					}
+				case 'y':
+					if (piecePosition[pieceNumber] == 44) {
+						piecePosition[pieceNumber] == 79;
+					}
+			}
+			if (piecePosition[pieceNumber] == 66 || piecePosition[pieceNumber] == 72 || piecePosition[pieceNumber] == 78 || piecePosition[pieceNumber] == 84) {
+				movementLeft = 0;
+			}
+		}
+	}
+	else if (movementLeft < 0) {
+		for (int x = 0; x > movementLeft; x--) {
+			piecePosition[pieceNumber] -= 1;
+			switch (playerColor(pieceNumber)) {
+			case 'r':
+				if (piecePosition[pieceNumber] == 60) {
+					piecePosition[pieceNumber] == 58;
+				}
+			case 'b':
+				if (piecePosition[pieceNumber] == 66) {
+					piecePosition[pieceNumber] == 13;
+				}
+			case 'g':
+				if (piecePosition[pieceNumber] == 29) {
+					piecePosition[pieceNumber] == 28;
+				}
+			case 'y':
+				if (piecePosition[pieceNumber] == 78) {
+					piecePosition[pieceNumber] == 43;
+				}
+			}
+		}
+	}
+	if (!(checkValidOrKillMovement(piecePosition[pieceNumber], pieceNumber))) {
+		piecePosition[pieceNumber] = originalPositionForIllegalReset;
+		std::cout << "Illigal move" << std::endl;
+	}
+	return 0;
+}
+int checkValidOrKillMovement(int currentPlayingPiecePosition, int currentPieceNum) {
+	for (int x = 0; x < (playerCount * 4); x++) {
+		if (currentPlayingPiecePosition == piecePosition[x]) {
+			if (currentPlayingPiecePosition == 66 || currentPlayingPiecePosition == 72 || currentPlayingPiecePosition == 78 || currentPlayingPiecePosition == 84) {
+				return true;
+			}
+			else {
+				switch (playerColor(currentPieceNum)) {
+				case 'r':
+					if (playerColor(x) == 'r') {
+						return false;
+					}
+					else if (playerColor(x) == 'b') {
+						piecePosition[x] = -2;
+						return true;
+					}
+					else if (playerColor(x) == 'g') {
+						piecePosition[x] = -3;
+						return true;
+					}
+					else if (playerColor(x) == 'y') {
+						piecePosition[x] = -4;
+						return true;
+					}
+				case 'b':
+					if (playerColor(x) == 'r') {
+						piecePosition[x] = -1;
+						return true;
+					}
+					else if (playerColor(x) == 'b') {
+						return false;
+					}
+					else if (playerColor(x) == 'g') {
+						piecePosition[x] = -3;
+						return true;
+					}
+					else if (playerColor(x) == 'y') {
+						piecePosition[x] = -4;
+						return true;
+					}
+				case 'g':
+					if (playerColor(x) == 'r') {
+						piecePosition[x] = -1;
+						return true;
+					}
+					else if (playerColor(x) == 'b') {
+						piecePosition[x] = -2;
+						return true;
+					}
+					else if (playerColor(x) == 'g') {
+						return false;
+					}
+					else if (playerColor(x) == 'y') {
+						piecePosition[x] = -4;
+						return true;
+					}
+				case 'y':
+					if (playerColor(x) == 'r') {
+						piecePosition[x] = -1;
+						return true;
+					}
+					else if (playerColor(x) == 'b') {
+						piecePosition[x] = -2;
+						return true;
+					}
+					else if (playerColor(x) == 'g') {
+						piecePosition[x] = -3;
+						return true;
+					}
+					else if (playerColor(x) == 'y') {
+						return false;
+					}
+				}
+			}
+		}
+	}
+}
+
+
+int main() {
+
+	boardGenerator();
+	std::cout << gameBoard[54] << std::endl;
+	playerDataGenerator(playerCount);
+	std::cout << pieceIdentifier[8] << std::endl;
+
+	system("pause");
+	return 0;
+}
