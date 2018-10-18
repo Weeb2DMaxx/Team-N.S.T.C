@@ -19,17 +19,17 @@ int piecePosition[16] = { 999,999,999,999,999,999,999,999,999,999,999,999,999,99
 int sliders[] = { 57, 0, 5, 9,     12, 15, 20, 24,         27, 30, 35, 39,           42, 45, 50, 54 };
 int gameBoard[84] = {};
 
-int playerNumGenerator (int a) {
+int playerNumGenerator (int a) { //generates a number of each piece based off the numbers of players
 	static int pieceNumber = 0;
 	pieceIdentifier[a] = pieceNumber;
 	pieceNumber++;
 	return 0;
 }
-char playerColor(int pieceNum) {
+char playerColor(int pieceNum) { //function used to determine the color of a piece
 	return teamColor[pieceNum / 4];
-}
-int playerDataGenerator(int playerCount) {
-	for (int a = 0; a < (playerCount * 4); a++) {
+} 
+int playerDataGenerator(int playerCount) { //Function that will load all data necessary for the game
+	for (int a = 0; a < (playerCount * 4); a++) { //Generates the player pieces and assigns them to their base
 		playerNumGenerator(a);
 		switch (playerColor(a)) {
 			case 'r':
@@ -50,17 +50,17 @@ int playerDataGenerator(int playerCount) {
 
 	return 0;
 }
-int boardGenerator() {
+int boardGenerator() { //Generates a board (I think this may be useless honestly)
 	int b = 0;
 	do {
 		static int a = 0;
 		gameBoard[a] = a;
 		a++;
 		b++;
-	} while (b < 83);
+	} while (b < 84);
 	return 0;
 }
-int playerMovement(int pieceNumber, int movementLeft) {
+int playerMovement(int pieceNumber, int movementLeft) { //This function will move the pieces and check validity with other functions (the movement function)
 	int originalPositionForIllegalReset = piecePosition[pieceNumber];
 	if (piecePosition[pieceNumber] == 66 || piecePosition[pieceNumber] == 72 || piecePosition[pieceNumber] == 78 || piecePosition[pieceNumber] == 84) {
 		movementLeft = 0;
@@ -125,7 +125,7 @@ int playerMovement(int pieceNumber, int movementLeft) {
 	}
 	return 0;
 }
-int checkValidOrKillMovement(int currentPlayingPiecePosition, int currentPieceNum) {
+int checkValidOrKillMovement(int currentPlayingPiecePosition, int currentPieceNum) { //Checks if a move is legal or not and if it will kill a piece or not
 	for (int x = 0; x < (playerCount * 4); x++) {
 		if (currentPlayingPiecePosition == piecePosition[x]) {
 			if (currentPlayingPiecePosition == 66 || currentPlayingPiecePosition == 72 || currentPlayingPiecePosition == 78 || currentPlayingPiecePosition == 84) {
@@ -202,7 +202,7 @@ int checkValidOrKillMovement(int currentPlayingPiecePosition, int currentPieceNu
 		}
 	}
 }
-int sliderKillCheck(char pieceColor, int sliderPositionCheck) {
+int sliderKillCheck(char pieceColor, int sliderPositionCheck) { //Checks if there are any kills on a slider path
 	for (int x = 0; x < (playerCount * 4); x++) {
 		if (piecePosition[x] == sliderPositionCheck && pieceColor != playerColor(x)) {
 			switch (playerColor(x)) {
@@ -223,7 +223,7 @@ int sliderKillCheck(char pieceColor, int sliderPositionCheck) {
 	}
 	return 0;
 }
-int sliderCheckAndMove(int currentPlayingPiecePosition, int currentPieceNum) {
+int sliderCheckAndMove(int currentPlayingPiecePosition, int currentPieceNum) { //Checks if a pice is on the start of a slider and will move them to the end while also checking for kills and legality
 	switch (playerColor(currentPieceNum)) {
 		case 'r':
 			if (currentPlayingPiecePosition == 12 && ((checkValidOrKillMovement(15, currentPieceNum)) != false)) {
@@ -400,7 +400,7 @@ int sliderCheckAndMove(int currentPlayingPiecePosition, int currentPieceNum) {
 	}
 }
 
-int main() {
+int main() { //main function
 
 	boardGenerator();
 	std::cout << gameBoard[54] << std::endl;
@@ -410,3 +410,4 @@ int main() {
 	system("pause");
 	return 0;
 }
+
