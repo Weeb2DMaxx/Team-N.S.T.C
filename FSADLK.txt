@@ -1,1 +1,523 @@
-adjkls
+#include <iostream>
+#include <random>
+
+int playerNumGenerator(int);
+int playerDataGenerator(int);
+char playerColor(int);
+int boardGenerator();
+int main();
+int playerMovement(int, int);
+int checkValidOrKillMovement(int, int);
+int sliderKillCheck(char, int);
+int sliderCheckAndMove(int, int);
+
+
+int playerCount = 2;
+char teamColor[] = {'r', 'b', 'g', 'y'};
+int pieceIdentifier[16] = { 999,999,999,999,999,999,999,999,999,999,999,999,999,999,999,999 };
+int piecePosition[16] = { 999,999,999,999,999,999,999,999,999,999,999,999,999,999,999,999 };
+int sliders[] = { 57, 0, 5, 9,     12, 15, 20, 24,         27, 30, 35, 39,           42, 45, 50, 54 };
+int gameBoard[84] = {};
+int one(5), two(4), three(4), four(4), five(4), six(4), seven(4), eight(4), nine(4), ten(4), eleven(4), twelve(4), sorry(4); //cardAmounts
+
+
+int playerNumGenerator (int a) { //generates a number of each piece based off the numbers of players
+	static int pieceNumber = 0;
+	pieceIdentifier[a] = pieceNumber;
+	pieceNumber++;
+	return 0;
+}
+char playerColor(int pieceNum) { //function used to determine the color of a piece
+	return teamColor[pieceNum / 4];
+} 
+int playerDataGenerator(int playerCount) { //Function that will load all data necessary for the game
+	for (int a = 0; a < (playerCount * 4); a++) { //Generates the player pieces and assigns them to their base
+		playerNumGenerator(a);
+		switch (playerColor(a)) {
+			case 'r':
+				piecePosition[a] = -1;
+				break;
+			case 'b':
+				piecePosition[a] = -2;
+				break;
+			case 'g':
+				piecePosition[a] = -3;
+				break;
+			case 'y':
+				piecePosition[a] = -4;
+				break;
+		}
+	}
+
+
+	return 0;
+}
+int boardGenerator() { //Generates a board (I think this may be useless honestly)
+	int b = 0;
+	do {
+		static int a = 0;
+		gameBoard[a] = a;
+		a++;
+		b++;
+	} while (b < 84);
+	return 0;
+}
+int playerMovement(int pieceNumber, int movementLeft) { //This function will move the pieces and check validity with other functions (the movement function)
+	int originalPositionForIllegalReset = piecePosition[pieceNumber];
+	if (piecePosition[pieceNumber] == 66 || piecePosition[pieceNumber] == 72 || piecePosition[pieceNumber] == 78 || piecePosition[pieceNumber] == 84) {
+		movementLeft = 0;
+	}	
+	if (movementLeft > 0) { 
+		for (int x = 0; x < movementLeft; x++) {
+			piecePosition[pieceNumber] += 1;
+			switch (playerColor(pieceNumber)) {
+				case 'r':
+					if (piecePosition[pieceNumber] == 59) {
+						piecePosition[pieceNumber] == 61;
+					}
+				case 'b':
+					if (piecePosition[pieceNumber] == 14) {
+						piecePosition[pieceNumber] == 67;
+					}
+				case 'g':
+					if (piecePosition[pieceNumber] == 29) {
+						piecePosition[pieceNumber] == 73;
+					}
+				case 'y':
+					if (piecePosition[pieceNumber] == 44) {
+						piecePosition[pieceNumber] == 79;
+					}
+			}
+			if (piecePosition[pieceNumber] == 66 || piecePosition[pieceNumber] == 72 || piecePosition[pieceNumber] == 78 || piecePosition[pieceNumber] == 84) {
+				movementLeft = 0;
+			}
+		}
+	}
+	else if (movementLeft < 0) {
+		for (int x = 0; x > movementLeft; x--) {
+			piecePosition[pieceNumber] -= 1;
+			switch (playerColor(pieceNumber)) {
+			case 'r':
+				if (piecePosition[pieceNumber] == 60) {
+					piecePosition[pieceNumber] == 58;
+				}
+			case 'b':
+				if (piecePosition[pieceNumber] == 66) {
+					piecePosition[pieceNumber] == 13;
+				}
+			case 'g':
+				if (piecePosition[pieceNumber] == 29) {
+					piecePosition[pieceNumber] == 28;
+				}
+			case 'y':
+				if (piecePosition[pieceNumber] == 78) {
+					piecePosition[pieceNumber] == 43;
+				}
+			}
+		}
+	}
+	
+	if (!(sliderCheckAndMove(piecePosition[pieceNumber], pieceNumber))) {
+		piecePosition[pieceNumber] = originalPositionForIllegalReset;
+		std::cout << "Illigal move" << std::endl;
+	}
+	if (!(checkValidOrKillMovement(piecePosition[pieceNumber], pieceNumber))) {
+		piecePosition[pieceNumber] = originalPositionForIllegalReset;
+		std::cout << "Illigal move" << std::endl;
+	}
+	return 0;
+}
+int checkValidOrKillMovement(int currentPlayingPiecePosition, int currentPieceNum) { //Checks if a move is legal or not and if it will kill a piece or not
+	for (int x = 0; x < (playerCount * 4); x++) {
+		if (currentPlayingPiecePosition == piecePosition[x]) {
+			if (currentPlayingPiecePosition == 66 || currentPlayingPiecePosition == 72 || currentPlayingPiecePosition == 78 || currentPlayingPiecePosition == 84) {
+				return true;
+			}
+			else {
+				switch (playerColor(currentPieceNum)) {
+				case 'r':
+					if (playerColor(x) == 'r') {
+						return false;
+					}
+					else if (playerColor(x) == 'b') {
+						piecePosition[x] = -2;
+						return true;
+					}
+					else if (playerColor(x) == 'g') {
+						piecePosition[x] = -3;
+						return true;
+					}
+					else if (playerColor(x) == 'y') {
+						piecePosition[x] = -4;
+						return true;
+					}
+				case 'b':
+					if (playerColor(x) == 'r') {
+						piecePosition[x] = -1;
+						return true;
+					}
+					else if (playerColor(x) == 'b') {
+						return false;
+					}
+					else if (playerColor(x) == 'g') {
+						piecePosition[x] = -3;
+						return true;
+					}
+					else if (playerColor(x) == 'y') {
+						piecePosition[x] = -4;
+						return true;
+					}
+				case 'g':
+					if (playerColor(x) == 'r') {
+						piecePosition[x] = -1;
+						return true;
+					}
+					else if (playerColor(x) == 'b') {
+						piecePosition[x] = -2;
+						return true;
+					}
+					else if (playerColor(x) == 'g') {
+						return false;
+					}
+					else if (playerColor(x) == 'y') {
+						piecePosition[x] = -4;
+						return true;
+					}
+				case 'y':
+					if (playerColor(x) == 'r') {
+						piecePosition[x] = -1;
+						return true;
+					}
+					else if (playerColor(x) == 'b') {
+						piecePosition[x] = -2;
+						return true;
+					}
+					else if (playerColor(x) == 'g') {
+						piecePosition[x] = -3;
+						return true;
+					}
+					else if (playerColor(x) == 'y') {
+						return false;
+					}
+				}
+			}
+		}
+	}
+}
+int sliderKillCheck(char pieceColor, int sliderPositionCheck) { //Checks if there are any kills on a slider path
+	for (int x = 0; x < (playerCount * 4); x++) {
+		if (piecePosition[x] == sliderPositionCheck && pieceColor != playerColor(x)) {
+			switch (playerColor(x)) {
+			case 'r':
+				piecePosition[x] = -1;
+				break;
+			case 'b':
+				piecePosition[x] = -2;
+				break;
+			case 'g':
+				piecePosition[x] = -3;
+				break;
+			case 'y':
+				piecePosition[x] = -4;
+				break;
+			}
+		}
+	}
+	return 0;
+}
+int sliderCheckAndMove(int currentPlayingPiecePosition, int currentPieceNum) { //Checks if a pice is on the start of a slider and will move them to the end while also checking for kills and legality
+	switch (playerColor(currentPieceNum)) {
+		case 'r':
+			if (currentPlayingPiecePosition == 12 && ((checkValidOrKillMovement(15, currentPieceNum)) != false)) {
+				sliderKillCheck((playerColor(currentPieceNum)), 13);
+				sliderKillCheck((playerColor(currentPieceNum)), 14);
+				sliderKillCheck((playerColor(currentPieceNum)), 15);
+				piecePosition[currentPieceNum] = 15;
+			}
+			else if (currentPlayingPiecePosition == 20 && ((checkValidOrKillMovement(24, currentPieceNum)) != false)) {
+				sliderKillCheck((playerColor(currentPieceNum)), 21);
+				sliderKillCheck((playerColor(currentPieceNum)), 22);
+				sliderKillCheck((playerColor(currentPieceNum)), 23);
+				sliderKillCheck((playerColor(currentPieceNum)), 24);
+				piecePosition[currentPieceNum] = 24;
+			}
+			else if (currentPlayingPiecePosition == 27 && ((checkValidOrKillMovement(30, currentPieceNum)) != false)) {
+				sliderKillCheck((playerColor(currentPieceNum)), 28);
+				sliderKillCheck((playerColor(currentPieceNum)), 29);
+				sliderKillCheck((playerColor(currentPieceNum)), 30);
+				piecePosition[currentPieceNum] = 30;
+			}
+			else if (currentPlayingPiecePosition == 35 && ((checkValidOrKillMovement(39, currentPieceNum)) != false)) {
+				sliderKillCheck((playerColor(currentPieceNum)), 36);
+				sliderKillCheck((playerColor(currentPieceNum)), 37);
+				sliderKillCheck((playerColor(currentPieceNum)), 38);
+				sliderKillCheck((playerColor(currentPieceNum)), 39);
+				piecePosition[currentPieceNum] = 39;
+			}
+			else if (currentPlayingPiecePosition == 42 && ((checkValidOrKillMovement(45, currentPieceNum)) != false)) {
+				sliderKillCheck((playerColor(currentPieceNum)), 43);
+				sliderKillCheck((playerColor(currentPieceNum)), 44);
+				sliderKillCheck((playerColor(currentPieceNum)), 45);
+				piecePosition[currentPieceNum] = 45;
+			}
+			else if (currentPlayingPiecePosition == 50 && ((checkValidOrKillMovement(54, currentPieceNum)) != false)) {
+				sliderKillCheck((playerColor(currentPieceNum)), 51);
+				sliderKillCheck((playerColor(currentPieceNum)), 52);
+				sliderKillCheck((playerColor(currentPieceNum)), 53);
+				sliderKillCheck((playerColor(currentPieceNum)), 54);
+				piecePosition[currentPieceNum] = 54;
+			}
+			else {
+				return false;
+			}
+		case 'b':
+			if (currentPlayingPiecePosition == 57 && ((checkValidOrKillMovement(0, currentPieceNum)) != false)) {
+				sliderKillCheck((playerColor(currentPieceNum)), 58);
+				sliderKillCheck((playerColor(currentPieceNum)), 59);
+				sliderKillCheck((playerColor(currentPieceNum)), 0);
+				piecePosition[currentPieceNum] = 0;
+			}
+			else if (currentPlayingPiecePosition == 5 && ((checkValidOrKillMovement(9, currentPieceNum)) != false)) {
+				sliderKillCheck((playerColor(currentPieceNum)), 6);
+				sliderKillCheck((playerColor(currentPieceNum)), 7);
+				sliderKillCheck((playerColor(currentPieceNum)), 8);
+				sliderKillCheck((playerColor(currentPieceNum)), 9);
+				piecePosition[currentPieceNum] = 9;
+			}
+			else if (currentPlayingPiecePosition == 27 && ((checkValidOrKillMovement(30, currentPieceNum)) != false)) {
+				sliderKillCheck((playerColor(currentPieceNum)), 28);
+				sliderKillCheck((playerColor(currentPieceNum)), 29);
+				sliderKillCheck((playerColor(currentPieceNum)), 30);
+				piecePosition[currentPieceNum] = 30;
+			}
+			else if (currentPlayingPiecePosition == 35 && ((checkValidOrKillMovement(39, currentPieceNum)) != false)) {
+				sliderKillCheck((playerColor(currentPieceNum)), 36);
+				sliderKillCheck((playerColor(currentPieceNum)), 37);
+				sliderKillCheck((playerColor(currentPieceNum)), 38);
+				sliderKillCheck((playerColor(currentPieceNum)), 39);
+				piecePosition[currentPieceNum] = 39;
+			}
+			else if (currentPlayingPiecePosition == 42 && ((checkValidOrKillMovement(45, currentPieceNum)) != false)) {
+				sliderKillCheck((playerColor(currentPieceNum)), 43);
+				sliderKillCheck((playerColor(currentPieceNum)), 44);
+				sliderKillCheck((playerColor(currentPieceNum)), 45);
+				piecePosition[currentPieceNum] = 45;
+			}
+			else if (currentPlayingPiecePosition == 50 && ((checkValidOrKillMovement(54, currentPieceNum)) != false)) {
+				sliderKillCheck((playerColor(currentPieceNum)), 51);
+				sliderKillCheck((playerColor(currentPieceNum)), 52);
+				sliderKillCheck((playerColor(currentPieceNum)), 53);
+				sliderKillCheck((playerColor(currentPieceNum)), 54);
+				piecePosition[currentPieceNum] = 54;
+			}
+			else {
+				return false;
+			}
+		case 'g':
+			if (currentPlayingPiecePosition == 57 && ((checkValidOrKillMovement(0, currentPieceNum)) != false)) {
+				sliderKillCheck((playerColor(currentPieceNum)), 58);
+				sliderKillCheck((playerColor(currentPieceNum)), 59);
+				sliderKillCheck((playerColor(currentPieceNum)), 0);
+				piecePosition[currentPieceNum] = 0;
+			}
+			else if (currentPlayingPiecePosition == 5 && ((checkValidOrKillMovement(9, currentPieceNum)) != false)) {
+				sliderKillCheck((playerColor(currentPieceNum)), 6);
+				sliderKillCheck((playerColor(currentPieceNum)), 7);
+				sliderKillCheck((playerColor(currentPieceNum)), 8);
+				sliderKillCheck((playerColor(currentPieceNum)), 9);
+				piecePosition[currentPieceNum] = 9;
+			}
+			else if (currentPlayingPiecePosition == 12 && ((checkValidOrKillMovement(15, currentPieceNum)) != false)) {
+				sliderKillCheck((playerColor(currentPieceNum)), 13);
+				sliderKillCheck((playerColor(currentPieceNum)), 14);
+				sliderKillCheck((playerColor(currentPieceNum)), 15);
+				piecePosition[currentPieceNum] = 15;
+			}
+			else if (currentPlayingPiecePosition == 20 && ((checkValidOrKillMovement(24, currentPieceNum)) != false)) {
+				sliderKillCheck((playerColor(currentPieceNum)), 21);
+				sliderKillCheck((playerColor(currentPieceNum)), 22);
+				sliderKillCheck((playerColor(currentPieceNum)), 23);
+				sliderKillCheck((playerColor(currentPieceNum)), 24);
+				piecePosition[currentPieceNum] = 24;
+			}
+			else if (currentPlayingPiecePosition == 42 && ((checkValidOrKillMovement(45, currentPieceNum)) != false)) {
+				sliderKillCheck((playerColor(currentPieceNum)), 43);
+				sliderKillCheck((playerColor(currentPieceNum)), 44);
+				sliderKillCheck((playerColor(currentPieceNum)), 45);
+				piecePosition[currentPieceNum] = 45;
+			}
+			else if (currentPlayingPiecePosition == 50 && ((checkValidOrKillMovement(54, currentPieceNum)) != false)) {
+				sliderKillCheck((playerColor(currentPieceNum)), 51);
+				sliderKillCheck((playerColor(currentPieceNum)), 52);
+				sliderKillCheck((playerColor(currentPieceNum)), 53);
+				sliderKillCheck((playerColor(currentPieceNum)), 54);
+				piecePosition[currentPieceNum] = 54;
+			}
+			else {
+				return false;
+			}
+		case 'y':
+			if (currentPlayingPiecePosition == 57 && ((checkValidOrKillMovement(0, currentPieceNum)) != false)) {
+				sliderKillCheck((playerColor(currentPieceNum)), 58);
+				sliderKillCheck((playerColor(currentPieceNum)), 59);
+				sliderKillCheck((playerColor(currentPieceNum)), 0);
+				piecePosition[currentPieceNum] = 0;
+			}
+			else if (currentPlayingPiecePosition == 5 && ((checkValidOrKillMovement(9, currentPieceNum)) != false)) {
+				sliderKillCheck((playerColor(currentPieceNum)), 6);
+				sliderKillCheck((playerColor(currentPieceNum)), 7);
+				sliderKillCheck((playerColor(currentPieceNum)), 8);
+				sliderKillCheck((playerColor(currentPieceNum)), 9);
+				piecePosition[currentPieceNum] = 9;
+			}
+			else if (currentPlayingPiecePosition == 12 && ((checkValidOrKillMovement(15, currentPieceNum)) != false)) {
+				sliderKillCheck((playerColor(currentPieceNum)), 13);
+				sliderKillCheck((playerColor(currentPieceNum)), 14);
+				sliderKillCheck((playerColor(currentPieceNum)), 15);
+				piecePosition[currentPieceNum] = 15;
+			}
+			else if (currentPlayingPiecePosition == 20 && ((checkValidOrKillMovement(24, currentPieceNum)) != false)) {
+				sliderKillCheck((playerColor(currentPieceNum)), 21);
+				sliderKillCheck((playerColor(currentPieceNum)), 22);
+				sliderKillCheck((playerColor(currentPieceNum)), 23);
+				sliderKillCheck((playerColor(currentPieceNum)), 24);
+				piecePosition[currentPieceNum] = 24;
+			}
+			else if (currentPlayingPiecePosition == 27 && ((checkValidOrKillMovement(30, currentPieceNum)) != false)) {
+				sliderKillCheck((playerColor(currentPieceNum)), 28);
+				sliderKillCheck((playerColor(currentPieceNum)), 29);
+				sliderKillCheck((playerColor(currentPieceNum)), 30);
+				piecePosition[currentPieceNum] = 30;
+			}
+			else if (currentPlayingPiecePosition == 35 && ((checkValidOrKillMovement(39, currentPieceNum)) != false)) {
+				sliderKillCheck((playerColor(currentPieceNum)), 36);
+				sliderKillCheck((playerColor(currentPieceNum)), 37);
+				sliderKillCheck((playerColor(currentPieceNum)), 38);
+				sliderKillCheck((playerColor(currentPieceNum)), 39);
+				piecePosition[currentPieceNum] = 39;
+			}
+			else {
+				return false;
+			}
+	}
+}
+int cardDraw(int cardNumber) {
+	bool availableCard = false;
+	if (one == 0 && two == 0 && three == 0 && four == 0 && five == 0 && six == 0 && seven == 0 && eight == 0 && nine == 0 && ten == 0 && eleven == 0 && twelve == 0 && sorry == 0) {
+		one = (5);
+		two = (4);
+		three = (4);
+		four = (4);
+		five = (4);
+		six = (4);
+		seven = (4);
+		eight = (4);
+		nine = (4);
+		ten = (4);
+		eleven = (4);
+		twelve = (4);
+		sorry = (4);
+	}
+	do {
+		std::mt19937 rng;
+		rng.seed(std::random_device()());
+		std::uniform_int_distribution<std::mt19937::result_type> random(1, 13); // distribution in range [1, 6] 
+		cardNumber = random(rng);
+		switch (cardNumber) {
+		case '1':
+			if (one >= 1) {
+				one--;
+				availableCard = true;
+			}
+			break;
+		case '2':
+			if (two >= 1) {
+				two--;
+				availableCard = true;
+			}
+			break;
+		case '3':
+			if (three >= 1) {
+				three--;
+				availableCard = true;
+			}
+			break;
+		case '4':
+			if (four >= 1) {
+				four--;
+				availableCard = true;
+			}
+			break;
+		case '5':
+			if (five >= 1) {
+				five--;
+				availableCard = true;
+			}
+			break;
+		case '6':
+			if (six >= 1) {
+				six--;
+				availableCard = true;
+			}
+			break;
+		case '7':
+			if (seven >= 1) {
+				seven--;
+				availableCard = true;
+			}
+			break;
+		case '8':
+			if (eight >= 1) {
+				eight--;
+				availableCard = true;
+			}
+			break;
+		case '9':
+			if (nine >= 1) {
+				nine--;
+				availableCard = true;
+			}
+			break;
+		case '10':
+			if (ten >= 1) {
+				ten--;
+				availableCard = true;
+			}
+			break;
+		case '11':
+			if (eleven >= 1) {
+				eleven--;
+				availableCard = true;
+			}
+			break;
+		case '12':
+			if (twelve >= 1) {
+				twelve--;
+				availableCard = true;
+			}
+			break;
+		case '13':
+			if (sorry >= 1) {
+				sorry--;
+				availableCard = true;
+			}
+			break;
+		}
+	} while (availableCard == false);
+	return cardNumber;
+}
+
+
+int main() { //main function
+
+	//boardGenerator();
+	//std::cout << gameBoard[54] << std::endl;
+	//playerDataGenerator(playerCount);
+	//std::cout << pieceIdentifier[8] << std::endl;
+	for(int x = 0; x < 18; x++) {
+		std::cout << cardDraw(9) << std::endl;
+	} 
+
+	system("pause");
+	return 0;
+}
