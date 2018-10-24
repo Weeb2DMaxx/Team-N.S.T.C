@@ -7,10 +7,14 @@ char playerColor(int);
 int boardGenerator();
 int main();
 int playerMovement(int, int);
-int checkValidOrKillMovement(int, int);
-int sliderKillCheck(char, int);
+bool checkValidOrKillMovement(int, int);
+void sliderKillCheck(char, int);
 int sliderCheckAndMove(int, int);
-int cardDraw(int);
+int cardDraw();
+char playerColorTurn();
+int playerMovementInput(char);
+bool checkIfPlayerWon(char);
+void sorryCardActivation(char, int);
 
 int playerCount = 2;
 char teamColor[] = {'r', 'b', 'g', 'y'};
@@ -67,30 +71,40 @@ int playerMovement(int pieceNumber, int movementLeft) { //This function will mov
 	if (piecePosition[pieceNumber] == 66 || piecePosition[pieceNumber] == 72 || piecePosition[pieceNumber] == 78 || piecePosition[pieceNumber] == 84) {
 		movementLeft = 0;
 	}	
+	if (movementLeft == 13) {
+		movementLeft = 0;
+		sorryCardActivation(playerColor(pieceNumber), pieceNumber);
+	}
+	if (movementLeft == 4) {
+		movementLeft = -4;
+	}
 	if (movementLeft > 0) { 
 		for (int x = 0; x < movementLeft; x++) {
 			piecePosition[pieceNumber] += 1;
 			switch (playerColor(pieceNumber)) {
 				case 'r':
 					if (piecePosition[pieceNumber] == 59) {
-						piecePosition[pieceNumber] == 61;
+						piecePosition[pieceNumber] = 61;
 					}
 					break;
 				case 'b':
 					if (piecePosition[pieceNumber] == 14) {
-						piecePosition[pieceNumber] == 67;
+						piecePosition[pieceNumber] = 67;
 					}
 					break;
 				case 'g':
 					if (piecePosition[pieceNumber] == 29) {
-						piecePosition[pieceNumber] == 73;
+						piecePosition[pieceNumber] = 73;
 					}
 					break;
 				case 'y':
 					if (piecePosition[pieceNumber] == 44) {
-						piecePosition[pieceNumber] == 79;
+						piecePosition[pieceNumber] = 79;
 					}
 					break;
+			}
+			if (piecePosition[pieceNumber] == 59) {
+				piecePosition[pieceNumber] = 0;
 			}
 			if (piecePosition[pieceNumber] == 66 || piecePosition[pieceNumber] == 72 || piecePosition[pieceNumber] == 78 || piecePosition[pieceNumber] == 84) {
 				movementLeft = 0;
@@ -103,20 +117,23 @@ int playerMovement(int pieceNumber, int movementLeft) { //This function will mov
 			switch (playerColor(pieceNumber)) {
 			case 'r':
 				if (piecePosition[pieceNumber] == 60) {
-					piecePosition[pieceNumber] == 58;
+					piecePosition[pieceNumber] = 58;
 				}
 			case 'b':
 				if (piecePosition[pieceNumber] == 66) {
-					piecePosition[pieceNumber] == 13;
+					piecePosition[pieceNumber] = 13;
 				}
 			case 'g':
 				if (piecePosition[pieceNumber] == 29) {
-					piecePosition[pieceNumber] == 28;
+					piecePosition[pieceNumber] = 28;
 				}
 			case 'y':
 				if (piecePosition[pieceNumber] == 78) {
-					piecePosition[pieceNumber] == 43;
+					piecePosition[pieceNumber] = 43;
 				}
+			}
+			if (piecePosition[pieceNumber] == -1) {
+				piecePosition[pieceNumber] = 59;
 			}
 		}
 	}
@@ -128,13 +145,15 @@ int playerMovement(int pieceNumber, int movementLeft) { //This function will mov
 			std::cout << "Illigal move" << std::endl;
 		}
 	}
-	if (!(checkValidOrKillMovement(piecePosition[pieceNumber], pieceNumber))) {
-		piecePosition[pieceNumber] = originalPositionForIllegalReset;
-		std::cout << "Illigal move" << std::endl;
+	else  {
+		if (!(checkValidOrKillMovement(piecePosition[pieceNumber], pieceNumber))) {
+			piecePosition[pieceNumber] = originalPositionForIllegalReset;
+			std::cout << "Illigal move" << std::endl;
+		}
 	}
 	return 0;
 }
-int checkValidOrKillMovement(int currentPlayingPiecePosition, int currentPieceNum) { //Checks if a move is legal or not and if it will kill a piece or not
+bool checkValidOrKillMovement(int currentPlayingPiecePosition, int currentPieceNum) { //Checks if a move is legal or not and if it will kill a piece or not
 	for (int x = 0; x < (playerCount * 4); x++) {
 		if (currentPlayingPiecePosition == piecePosition[x] && currentPieceNum != x) {
 			if (currentPlayingPiecePosition == 66 || currentPlayingPiecePosition == 72 || currentPlayingPiecePosition == 78 || currentPlayingPiecePosition == 84) {
@@ -211,7 +230,7 @@ int checkValidOrKillMovement(int currentPlayingPiecePosition, int currentPieceNu
 		}
 	}
 }
-int sliderKillCheck(char pieceColor, int sliderPositionCheck) { //Checks if there are any kills on a slider path
+void sliderKillCheck(char pieceColor, int sliderPositionCheck) { //Checks if there are any kills on a slider path
 	for (int x = 0; x < (playerCount * 4); x++) {
 		if (piecePosition[x] == sliderPositionCheck && (pieceColor != playerColor(x))) {
 			switch (playerColor(x)) {
@@ -230,7 +249,7 @@ int sliderKillCheck(char pieceColor, int sliderPositionCheck) { //Checks if ther
 			}
 		}
 	}
-	return 0;
+	return;
 }
 int sliderCheckAndMove(int currentPlayingPiecePosition, int currentPieceNum) { //Checks if a pice is on the start of a slider and will move them to the end while also checking for kills and legality
 	switch (playerColor(currentPieceNum)) {
@@ -277,8 +296,8 @@ int sliderCheckAndMove(int currentPlayingPiecePosition, int currentPieceNum) { /
 			else if (currentPlayingPiecePosition == 57) {
 				checkValidOrKillMovement(57, currentPieceNum);
 			}
-			else if (currentPlayingPiecePosition == 0) {
-				checkValidOrKillMovement(0, currentPieceNum);
+			else if (currentPlayingPiecePosition == 5) {
+				checkValidOrKillMovement(5, currentPieceNum);
 			}
 			else {
 				return false;
@@ -672,6 +691,178 @@ bool checkIfPlayerWon(char colorOfPlayer) {
 		}
 	}
 }
+void sorryCardActivation(char currentPlayerColor, int currentPieceNumber) {
+	int x = 999;
+	int z = 999;
+	int closestOpponentPieceID;
+	int closestOppenentPosition;
+	switch (currentPlayerColor) {
+		case 'r':
+			for (int y = 0; y < 4; y++) {
+				if (piecePosition[y] == -1) {
+					x = y;
+				}
+			}
+			if (x == 999) {
+				return;
+			}
+			for (int y = 0; y < playerCount * 4; y++) {
+				if (playerColor(y) != currentPlayerColor && (piecePosition[y] > -1) && !(piecePosition[y] > 59)) {
+					z = y;
+				}
+			}
+			closestOppenentPosition = piecePosition[z];
+			if (z == 999) {
+				return;
+			}
+			for (int y = 0; y < playerCount * 4; y++) {
+				int tempNumForCompare;
+				if (playerColor(y) != currentPlayerColor && !(piecePosition[y] > 59)) {
+					tempNumForCompare = piecePosition[y] - 59;
+					if (tempNumForCompare < closestOppenentPosition) {
+						closestOppenentPosition = tempNumForCompare;
+						closestOpponentPieceID = y;
+					}
+				}
+			}
+			piecePosition[currentPieceNumber] = closestOppenentPosition;
+			switch (playerColor(closestOpponentPieceID)) {
+				case 'b':
+					piecePosition[closestOpponentPieceID] = -2;
+				case 'g':
+					piecePosition[closestOpponentPieceID] = -3;
+				case 'y':
+					piecePosition[closestOpponentPieceID] = -4;
+			}
+			return;
+		case 'b':
+			for (int y = 4; y < 8; y++) {
+				if (piecePosition[y] == -1) {
+					x = y;
+				}
+			}
+			if (x == 999) {
+				return;
+			}
+			for (int y = 0; y < playerCount * 4; y++) {
+				if (playerColor(y) != currentPlayerColor && (piecePosition[y] > -1) && !(piecePosition[y] > 59)) {
+					z = y;
+				}
+			}
+			if (z == 999) {
+				return;
+			}
+			closestOppenentPosition = piecePosition[z];
+			for (int y = 0; y < playerCount * 4; y++) {
+				int tempNumForCompare;
+				if (playerColor(y) != currentPlayerColor && !(piecePosition[y] > 59)) {
+					tempNumForCompare = piecePosition[y] - 14;
+					if (tempNumForCompare > closestOppenentPosition && tempNumForCompare <= 0) {
+						closestOppenentPosition = tempNumForCompare;
+						closestOpponentPieceID = y;
+					} else if (tempNumForCompare > closestOppenentPosition && tempNumForCompare > 0 && closestOppenentPosition > 0){
+						closestOppenentPosition = tempNumForCompare;
+						closestOpponentPieceID = y;
+					}
+				}
+			}
+			piecePosition[currentPieceNumber] = closestOppenentPosition;
+			switch (playerColor(closestOpponentPieceID)) {
+			case 'r':
+				piecePosition[closestOpponentPieceID] = -1;
+			case 'g':
+				piecePosition[closestOpponentPieceID] = -3;
+			case 'y':
+				piecePosition[closestOpponentPieceID] = -4;
+			}
+			return;
+		case 'g':
+			for (int y = 8; y < 12; y++) {
+				if (piecePosition[y] == -1) {
+					x = y;
+				}
+			}
+			if (x == 999) {
+				return;
+			}
+			for (int y = 0; y < playerCount * 4; y++) {
+				if (playerColor(y) != currentPlayerColor && (piecePosition[y] > -1) && !(piecePosition[y] > 59)) {
+					z = y;
+				}
+			}
+			if (z == 999) {
+				return;
+			}
+			closestOppenentPosition = piecePosition[z];
+			for (int y = 0; y < playerCount * 4; y++) {
+				int tempNumForCompare;
+				if (playerColor(y) != currentPlayerColor && !(piecePosition[y] > 59)) {
+					tempNumForCompare = piecePosition[y] - 29;
+					if (tempNumForCompare > closestOppenentPosition && tempNumForCompare <= 0) {
+						closestOppenentPosition = tempNumForCompare;
+						closestOpponentPieceID = y;
+					}
+					else if (tempNumForCompare > closestOppenentPosition && tempNumForCompare > 0 && closestOppenentPosition > 0) {
+						closestOppenentPosition = tempNumForCompare;
+						closestOpponentPieceID = y;
+					}
+				}
+			}
+			piecePosition[currentPieceNumber] = closestOppenentPosition;
+			switch (playerColor(closestOpponentPieceID)) {
+			case 'r':
+				piecePosition[closestOpponentPieceID] = -1;
+			case 'b':
+				piecePosition[closestOpponentPieceID] = -2;
+			case 'y':
+				piecePosition[closestOpponentPieceID] = -4;
+			}
+			return;
+		case 'y':
+			for (int y = 12; y < 16; y++) {
+				if (piecePosition[y] == -1) {
+					x = y;
+				}
+			}
+			if (x == 999) {
+				return;
+			}
+			for (int y = 0; y < playerCount * 4; y++) {
+				if (playerColor(y) != currentPlayerColor && (piecePosition[y] > -1) && !(piecePosition[y] > 59)) {
+					z = y;
+				}
+			}
+			if (z == 999) {
+				return;
+			}
+			closestOppenentPosition = piecePosition[z];
+			for (int y = 0; y < playerCount * 4; y++) {
+				int tempNumForCompare;
+				if (playerColor(y) != currentPlayerColor && !(piecePosition[y] > 59)) {
+					tempNumForCompare = piecePosition[y] - 44;
+					if (tempNumForCompare > closestOppenentPosition && tempNumForCompare <= 0) {
+						closestOppenentPosition = tempNumForCompare;
+						closestOpponentPieceID = y;
+					}
+					else if (tempNumForCompare > closestOppenentPosition && tempNumForCompare > 0 && closestOppenentPosition > 0) {
+						closestOppenentPosition = tempNumForCompare;
+						closestOpponentPieceID = y;
+					}
+				}
+			}
+			piecePosition[currentPieceNumber] = closestOppenentPosition;
+			switch (playerColor(closestOpponentPieceID)) {
+			case 'r':
+				piecePosition[closestOpponentPieceID] = -1;
+			case 'b':
+				piecePosition[closestOpponentPieceID] = -2;
+			case 'g':
+				piecePosition[closestOpponentPieceID] = -3;
+			}
+			return;
+	}
+}
+
 
 char gamePlayingFunction() {
 	char currentPlayingColor;
