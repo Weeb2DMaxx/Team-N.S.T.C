@@ -10,7 +10,7 @@ int playerMovement(int, int);
 int checkValidOrKillMovement(int, int);
 int sliderKillCheck(char, int);
 int sliderCheckAndMove(int, int);
-
+int cardDraw(int);
 
 int playerCount = 2;
 char teamColor[] = {'r', 'b', 'g', 'y'};
@@ -35,7 +35,7 @@ int playerDataGenerator(int playerCount) { //Function that will load all data ne
 		playerNumGenerator(a);
 		switch (playerColor(a)) {
 			case 'r':
-				piecePosition[a] = -1;
+				piecePosition[a] = 0;
 				break;
 			case 'b':
 				piecePosition[a] = -2;
@@ -75,18 +75,22 @@ int playerMovement(int pieceNumber, int movementLeft) { //This function will mov
 					if (piecePosition[pieceNumber] == 59) {
 						piecePosition[pieceNumber] == 61;
 					}
+					break;
 				case 'b':
 					if (piecePosition[pieceNumber] == 14) {
 						piecePosition[pieceNumber] == 67;
 					}
+					break;
 				case 'g':
 					if (piecePosition[pieceNumber] == 29) {
 						piecePosition[pieceNumber] == 73;
 					}
+					break;
 				case 'y':
 					if (piecePosition[pieceNumber] == 44) {
 						piecePosition[pieceNumber] == 79;
 					}
+					break;
 			}
 			if (piecePosition[pieceNumber] == 66 || piecePosition[pieceNumber] == 72 || piecePosition[pieceNumber] == 78 || piecePosition[pieceNumber] == 84) {
 				movementLeft = 0;
@@ -116,10 +120,13 @@ int playerMovement(int pieceNumber, int movementLeft) { //This function will mov
 			}
 		}
 	}
-	
-	if (!(sliderCheckAndMove(piecePosition[pieceNumber], pieceNumber))) {
-		piecePosition[pieceNumber] = originalPositionForIllegalReset;
-		std::cout << "Illigal move" << std::endl;
+	if (piecePosition[pieceNumber] == 57 || piecePosition[pieceNumber] == 5 || piecePosition[pieceNumber] == 12 || piecePosition[pieceNumber] == 20 || piecePosition[pieceNumber] == 27 || piecePosition[pieceNumber] == 35 || piecePosition[pieceNumber] == 42 || piecePosition[pieceNumber] == 50) {
+		if (!(sliderCheckAndMove(piecePosition[pieceNumber], pieceNumber))) {
+			std::cout << pieceNumber << std::endl;
+			std::cout << piecePosition[pieceNumber] << std::endl;
+			piecePosition[pieceNumber] = originalPositionForIllegalReset;
+			std::cout << "Illigal move" << std::endl;
+		}
 	}
 	if (!(checkValidOrKillMovement(piecePosition[pieceNumber], pieceNumber))) {
 		piecePosition[pieceNumber] = originalPositionForIllegalReset;
@@ -129,7 +136,7 @@ int playerMovement(int pieceNumber, int movementLeft) { //This function will mov
 }
 int checkValidOrKillMovement(int currentPlayingPiecePosition, int currentPieceNum) { //Checks if a move is legal or not and if it will kill a piece or not
 	for (int x = 0; x < (playerCount * 4); x++) {
-		if (currentPlayingPiecePosition == piecePosition[x]) {
+		if (currentPlayingPiecePosition == piecePosition[x] && currentPieceNum != x) {
 			if (currentPlayingPiecePosition == 66 || currentPlayingPiecePosition == 72 || currentPlayingPiecePosition == 78 || currentPlayingPiecePosition == 84) {
 				return true;
 			}
@@ -206,7 +213,7 @@ int checkValidOrKillMovement(int currentPlayingPiecePosition, int currentPieceNu
 }
 int sliderKillCheck(char pieceColor, int sliderPositionCheck) { //Checks if there are any kills on a slider path
 	for (int x = 0; x < (playerCount * 4); x++) {
-		if (piecePosition[x] == sliderPositionCheck && pieceColor != playerColor(x)) {
+		if (piecePosition[x] == sliderPositionCheck && (pieceColor != playerColor(x))) {
 			switch (playerColor(x)) {
 			case 'r':
 				piecePosition[x] = -1;
@@ -228,7 +235,7 @@ int sliderKillCheck(char pieceColor, int sliderPositionCheck) { //Checks if ther
 int sliderCheckAndMove(int currentPlayingPiecePosition, int currentPieceNum) { //Checks if a pice is on the start of a slider and will move them to the end while also checking for kills and legality
 	switch (playerColor(currentPieceNum)) {
 		case 'r':
-			if (currentPlayingPiecePosition == 12 && ((checkValidOrKillMovement(15, currentPieceNum)) != false)) {
+			if (currentPlayingPiecePosition == 12 && (!(checkValidOrKillMovement(15, currentPieceNum)))) {
 				sliderKillCheck((playerColor(currentPieceNum)), 13);
 				sliderKillCheck((playerColor(currentPieceNum)), 14);
 				sliderKillCheck((playerColor(currentPieceNum)), 15);
@@ -266,6 +273,12 @@ int sliderCheckAndMove(int currentPlayingPiecePosition, int currentPieceNum) { /
 				sliderKillCheck((playerColor(currentPieceNum)), 53);
 				sliderKillCheck((playerColor(currentPieceNum)), 54);
 				piecePosition[currentPieceNum] = 54;
+			}
+			else if (currentPlayingPiecePosition == 57) {
+				checkValidOrKillMovement(57, currentPieceNum);
+			}
+			else if (currentPlayingPiecePosition == 0) {
+				checkValidOrKillMovement(0, currentPieceNum);
 			}
 			else {
 				return false;
@@ -310,6 +323,12 @@ int sliderCheckAndMove(int currentPlayingPiecePosition, int currentPieceNum) { /
 				sliderKillCheck((playerColor(currentPieceNum)), 54);
 				piecePosition[currentPieceNum] = 54;
 			}
+			else if (currentPlayingPiecePosition == 12) {
+				checkValidOrKillMovement(12, currentPieceNum);
+			}
+			else if (currentPlayingPiecePosition == 20) {
+				checkValidOrKillMovement(20, currentPieceNum);
+			}
 			else {
 				return false;
 			}
@@ -352,6 +371,12 @@ int sliderCheckAndMove(int currentPlayingPiecePosition, int currentPieceNum) { /
 				sliderKillCheck((playerColor(currentPieceNum)), 53);
 				sliderKillCheck((playerColor(currentPieceNum)), 54);
 				piecePosition[currentPieceNum] = 54;
+			}
+			else if (currentPlayingPiecePosition == 27) {
+				checkValidOrKillMovement(27, currentPieceNum);
+			}
+			else if (currentPlayingPiecePosition == 35) {
+				checkValidOrKillMovement(35, currentPieceNum);
 			}
 			else {
 				return false;
@@ -396,12 +421,19 @@ int sliderCheckAndMove(int currentPlayingPiecePosition, int currentPieceNum) { /
 				sliderKillCheck((playerColor(currentPieceNum)), 39);
 				piecePosition[currentPieceNum] = 39;
 			}
+			else if (currentPlayingPiecePosition == 42) {
+				checkValidOrKillMovement(42, currentPieceNum);
+			}
+			else if (currentPlayingPiecePosition == 50) {
+				checkValidOrKillMovement(50, currentPieceNum);
+			}
 			else {
 				return false;
 			}
 	}
 }
-int cardDraw(int cardNumber) {
+int cardDraw() {
+	int cardNumber;
 	bool availableCard = false;
 	if (one == 0 && two == 0 && three == 0 && four == 0 && five == 0 && six == 0 && seven == 0 && eight == 0 && nine == 0 && ten == 0 && eleven == 0 && twelve == 0 && sorry == 0) {
 		one = (5);
@@ -424,79 +456,79 @@ int cardDraw(int cardNumber) {
 		std::uniform_int_distribution<std::mt19937::result_type> random(1, 13); // distribution in range [1, 6] 
 		cardNumber = random(rng);
 		switch (cardNumber) {
-		case '1':
+		case 1:
 			if (one >= 1) {
 				one--;
 				availableCard = true;
 			}
 			break;
-		case '2':
+		case 2:
 			if (two >= 1) {
 				two--;
 				availableCard = true;
 			}
 			break;
-		case '3':
+		case 3:
 			if (three >= 1) {
 				three--;
 				availableCard = true;
 			}
 			break;
-		case '4':
+		case 4:
 			if (four >= 1) {
 				four--;
 				availableCard = true;
 			}
 			break;
-		case '5':
+		case 5:
 			if (five >= 1) {
 				five--;
 				availableCard = true;
 			}
 			break;
-		case '6':
+		case 6:
 			if (six >= 1) {
 				six--;
 				availableCard = true;
 			}
 			break;
-		case '7':
+		case 7:
 			if (seven >= 1) {
 				seven--;
 				availableCard = true;
 			}
 			break;
-		case '8':
+		case 8:
 			if (eight >= 1) {
 				eight--;
 				availableCard = true;
 			}
 			break;
-		case '9':
+		case 9:
 			if (nine >= 1) {
 				nine--;
 				availableCard = true;
 			}
 			break;
-		case '10':
+		case 10:
 			if (ten >= 1) {
 				ten--;
 				availableCard = true;
 			}
 			break;
-		case '11':
+		case 11:
 			if (eleven >= 1) {
 				eleven--;
 				availableCard = true;
 			}
 			break;
-		case '12':
+		case 12:
 			if (twelve >= 1) {
 				twelve--;
 				availableCard = true;
 			}
 			break;
-		case '13':
+		case 13:
 			if (sorry >= 1) {
 				sorry--;
 				availableCard = true;
@@ -506,18 +538,184 @@ int cardDraw(int cardNumber) {
 	} while (availableCard == false);
 	return cardNumber;
 }
+char playerColorTurn() {
+	static int turn;
+	if (playerCount == 4) {
+		turn++;
+		if (turn > 4) {
+			turn = 1;
+		}
+	} else if (playerCount == 3) {
+		turn++;
+		if (turn > 3) {
+			turn = 1;
+		}
+	} else if (playerCount == 2) {
+		turn++;
+		if (turn > 2) {
+			turn = 1;
+		}
+	}
+	
+	switch (turn) {
+	case 1:
+		return 'r';
+		break;
+	case 2:
+		return 'b';
+		break;
+	case 3:
+		return 'g';
+		break;
+	case 4:
+		return 'y';
+		break;
+	}
+}
+int playerMovementInput(char colorOfPlayer) {
+	std::cout << "Input what piece you would like to move." << std::endl;
+		bool intCheck = false;
+		int input = 0;
+		do {
+			std::cout << "Make sure it's either 1, 2, 3 or 4!\n";
+			std::cin >> input;
+			if ((input == 1 || input == 2 || input == 3 || input == 4)) {
+				intCheck = true;
+			}
+			std::cin.clear();
+			std::cin.ignore();
+		} while (!(intCheck));
+		switch (input) {
+		case 1:
+			if (colorOfPlayer == 'r') {
+				return 0;
+			}
+			else if (colorOfPlayer == 'b') {
+				return 4;
+			}
+			else if (colorOfPlayer == 'g') {
+				return 8;
+			}
+			else if (colorOfPlayer == 'y') {
+				return 12;
+			}
+		case 2:
+			if (colorOfPlayer == 'r') {
+				return 1;
+			}
+			else if (colorOfPlayer == 'b') {
+				return 5;
+			}
+			else if (colorOfPlayer == 'g') {
+				return 9;
+			}
+			else if (colorOfPlayer == 'y') {
+				return 13;
+			}
+		case 3:
+			if (colorOfPlayer == 'r') {
+				return 2;
+			}
+			else if (colorOfPlayer == 'b') {
+				return 6;
+			}
+			else if (colorOfPlayer == 'g') {
+				return 10;
+			}
+			else if (colorOfPlayer == 'y') {
+				return 14;
+			}
+		case 4:
+			if (colorOfPlayer == 'r') {
+				return 3;
+			}
+			else if (colorOfPlayer == 'b') {
+				return 7;
+			}
+			else if (colorOfPlayer == 'g') {
+				return 11;
+			}
+			else if (colorOfPlayer == 'y') {
+				return 15;
+			}
+		}
+}
+bool checkIfPlayerWon(char colorOfPlayer) {
+	switch (colorOfPlayer) {
+	case 'r':
+		if (piecePosition[0] == 66 && piecePosition[1] == 66 && piecePosition[2] == 66 && piecePosition[3] == 66) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	case 'b':
+		if (piecePosition[4] == 72 && piecePosition[5] == 72 && piecePosition[6] == 72 && piecePosition[7] == 72) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	case 'g':
+		if (piecePosition[8] == 78 && piecePosition[9] == 78 && piecePosition[10] == 78 && piecePosition[11] == 78) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	case 'y':
+		if (piecePosition[12] == 84 && piecePosition[13] == 84 && piecePosition[14] == 84 && piecePosition[15] == 84) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+}
 
+char gamePlayingFunction() {
+	char currentPlayingColor;
+	do {
+		currentPlayingColor = playerColorTurn();
+		//Draws the card
+		//Takes input from user to allow the movement and decision of what piece to move
+		int cardDrawn = cardDraw();
+		std::cout << "You drew a " << cardDrawn << std::endl;
+
+		playerMovement(playerMovementInput(currentPlayingColor), cardDrawn); //Will move pieces and checks for the kills and sliders
+		//This for loop is simply here to test the game and see if it is running or not
+		//Will be deleted later
+		for (int x = 0; x < playerCount * 4; x++) {
+			std::cout << piecePosition[x] << ",   ";
+		}
+		std::cout << "\nYou drew a " << currentPlayingColor << std::endl;
+	} while (checkIfPlayerWon(currentPlayingColor) == false);
+	return currentPlayingColor;
+
+	//Need to add a function that will check for whether a piece is in the base or not
+	//Need a function for sorry card
+}
 
 int main() { //main function
-
-	//boardGenerator();
-	//std::cout << gameBoard[54] << std::endl;
-	//playerDataGenerator(playerCount);
-	//std::cout << pieceIdentifier[8] << std::endl;
-	for(int x = 0; x < 18; x++) {
-		std::cout << cardDraw(9) << std::endl;
-	} 
-
+	std::cout << "How many players?\n";
+	std::cin >> playerCount;
+	playerDataGenerator(playerCount);
+	boardGenerator();
+	
+	switch (gamePlayingFunction()) {
+	case 'r':
+		std::cout << "Red is the winner!" << std::endl;
+		break;
+	case 'b':
+		std::cout << "Blue is the winner!" << std::endl;
+		break;
+	case 'g':
+		std::cout << "Green is the winner!" << std::endl;
+		break;
+	case 'y':
+		std::cout << "Yellow is the winner!" << std::endl;
+		break;
+	}
 	system("pause");
 	return 0;
 }
