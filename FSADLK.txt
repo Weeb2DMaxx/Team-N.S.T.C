@@ -121,7 +121,7 @@ int playerMovement(int pieceNumber, int movementLeft) { //This function will mov
 	}
 	if (!(checkValidOrKillMovement(piecePosition[pieceNumber], pieceNumber))) {
 		piecePosition[pieceNumber] = originalPositionForIllegalReset;
-		std::cout << "Illigal move" << std::endl;
+		std::cout << "Illegal move" << std::endl;
 	}
 	return 0;
 }
