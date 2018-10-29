@@ -1,5 +1,6 @@
 #include <iostream>
 #include <random>
+#include <string>
 
 int playerNumGenerator(int);
 int playerDataGenerator(int);
@@ -15,6 +16,10 @@ char playerColorTurn(int);
 int playerMovementInput(char);
 bool checkIfPlayerWon(char);
 void sorryCardActivation(char, int);
+void swapPosition(char);
+bool userSwapOrMove(char);
+void displayBoard();
+char gamePlayingFunction();
 
 int playerCount = 2;
 char teamColor[] = { 'r', 'b', 'g', 'y' };
@@ -956,7 +961,432 @@ bool userSwapOrMove(char playerColorCheck) {
 		return false;
 	}
 }
+void displayBoard() {
+	std::string gameBoard =
+		" _______________________________________________________________________________\n"
+		"|    |>   |>   |>   |>   |    |    |    |    |>   |>   |>   |>   |>   |    |    |\n"
+		" _____________________^_________________________________________________________\n"
+		"|    |	  |    |                                                           |V   |\n"
+		" ____	   ____       Start                   ~~~~ ____ ____ ____ ____ ____ ____\n"
+		"|   ^|	  |    |                             {    }    |    |    |    |    |V   |\n"
+		" ____	   ____                               ~~~~ ____ ____ ____ ____ ____ ____\n"
+		"|   ^|	  |    |                                                           |V   |\n"
+		" ____	   ____                                                             ____\n"
+		"|   ^|	  |    |                                                           >V   |\n"
+		" ____	   ____                                                      Start  ____\n"
+		"|   ^|	  |    |                                                           |    |\n"
+		" ____	   ~~~~                                                             ____\n"
+		"|   ^|	  {    }                                                           |    |\n"
+		" ____	   ~~~~                                                             ____\n"
+		"|    |                                                                     |    |\n"
+		" ____                                                                       ____\n"
+		"|    |                                                                     |    |\n"
+		" ____                                                             ~~~~      ____\n"
+		"|    |                                                           {    }    |V   |\n"
+		" ____                                                             ~~~~      ____\n"
+		"|    |   Start                                                   |    |    |V   |\n"
+		" ____                                                             ____      ____\n"
+		"|   ^<                                                           |    |    |V   |\n"
+		" ____                                                             ____      ____\n"
+		"|   ^|                                                           |    |    |V   |\n"
+		" ____ ____ ____ ____ ____ ____ ~~~~                               ____      ____\n"
+		"|   ^|    |    |    |    |    {    }                             |    |    |V   |\n"
+		" ____ ____ ____ ____ ____ ____ ~~~~                    Start      ____      ____\n"
+		"|   ^|                                                           |    |    |    |\n"
+		" ________________________________________________________V______________________\n"
+		"|    |    |   <|   <|   <|   <|   <|    |    |    |    |   <|   <|   <|   <|    |\n"
+		" _______________________________________________________________________________\n";
+	int y = 0;
 
+	for (int x = 0; x < (sizeof(piecePosition) / sizeof(*piecePosition)); x++) {
+		std::string numToInsert;
+		std::string charToInsert;
+		if (y == 4) {
+			y = 0;
+		}
+		y++;
+		if (y == 1) {
+			numToInsert = "1";
+		}
+		if (y == 2) {
+			numToInsert = "2";
+		}
+		if (y == 3) {
+			numToInsert = "3";
+		}
+		if (y == 4) {
+			numToInsert = "4";
+		}
+		if (playerColor(x) == 'r') {
+			charToInsert = "R";
+		}
+		if (playerColor(x) == 'b') {
+			charToInsert = "B";
+		}
+		if (playerColor(x) == 'g') {
+			charToInsert = "G";
+		}
+		if (playerColor(x) == 'y') {
+			charToInsert = "Y";
+		}
+		switch (piecePosition[x]) {
+		case 1:
+			gameBoard.replace(104, 1, numToInsert);
+			gameBoard.replace(105, 1, charToInsert);
+			break;
+		case 2:
+			gameBoard.replace(109, 1, numToInsert);
+			gameBoard.replace(110, 1, charToInsert);
+			break;
+		case 3:
+			gameBoard.replace(114, 1, numToInsert);
+			gameBoard.replace(115, 1, charToInsert);
+			break;
+		case 4:
+			gameBoard.replace(119, 1, numToInsert);
+			gameBoard.replace(120, 1, charToInsert);
+			break;
+		case 5:
+			gameBoard.replace(124, 1, numToInsert);
+			gameBoard.replace(125, 1, charToInsert);
+			break;
+		case 6:
+			gameBoard.replace(129, 1, numToInsert);
+			gameBoard.replace(130, 1, charToInsert);
+		case 7:
+			gameBoard.replace(134, 1, numToInsert);
+			gameBoard.replace(135, 1, charToInsert);
+			break;
+		case 8:
+			gameBoard.replace(139, 1, numToInsert);
+			gameBoard.replace(140, 1, charToInsert);
+			break;
+		case 9:
+			gameBoard.replace(144, 1, numToInsert);
+			gameBoard.replace(145, 1, charToInsert);
+			break;
+		case 10:
+			gameBoard.replace(149, 1, numToInsert);
+			gameBoard.replace(150, 1, charToInsert);
+			break;
+		case 11:
+			gameBoard.replace(154, 1, numToInsert);
+			gameBoard.replace(155, 1, charToInsert);
+			break;
+		case 12:
+			gameBoard.replace(159, 1, numToInsert);
+			gameBoard.replace(160, 1, charToInsert);
+			break;
+		case 13:
+			gameBoard.replace(321, 1, numToInsert);
+			gameBoard.replace(322, 1, charToInsert);
+			break;
+		case 14:
+			gameBoard.replace(481, 1, numToInsert);
+			gameBoard.replace(482, 1, charToInsert);
+			break;
+		case 15:
+			gameBoard.replace(641, 1, numToInsert);
+			gameBoard.replace(642, 1, charToInsert);
+			break;
+		case 16:
+			gameBoard.replace(801, 1, numToInsert);
+			gameBoard.replace(802, 1, charToInsert);
+			break;
+		case 17:
+			gameBoard.replace(961, 1, numToInsert);
+			gameBoard.replace(962, 1, charToInsert);
+			break;
+		case 18:
+			gameBoard.replace(1121, 1, numToInsert);
+			gameBoard.replace(1122, 1, charToInsert);
+			break;
+		case 19:
+			gameBoard.replace(1282, 1, numToInsert);
+			gameBoard.replace(1283, 1, charToInsert);
+			break;
+		case 20:
+			gameBoard.replace(1445, 1, numToInsert);
+			gameBoard.replace(1446, 1, charToInsert);
+			break;
+		case 21:
+			gameBoard.replace(1608, 1, numToInsert);
+			gameBoard.replace(1609, 1, charToInsert);
+			break;
+		case 22:
+			gameBoard.replace(1771, 1, numToInsert);
+			gameBoard.replace(1772, 1, charToInsert);
+			break;
+		case 23:
+			gameBoard.replace(1934, 1, numToInsert);
+			gameBoard.replace(1935, 1, charToInsert);
+			break;
+		case 24:
+			gameBoard.replace(2097, 1, numToInsert);
+			gameBoard.replace(2098, 1, charToInsert);
+			break;
+		case 25:
+			gameBoard.replace(2260, 1, numToInsert);
+			gameBoard.replace(2261, 1, charToInsert);
+			break;
+		case 26:
+			gameBoard.replace(2423, 1, numToInsert);
+			gameBoard.replace(2424, 1, charToInsert);
+			break;
+		case 27:
+			gameBoard.replace(2586, 1, numToInsert);
+			gameBoard.replace(2587, 1, charToInsert);
+			break;
+		case 28:
+			gameBoard.replace(2579, 1, numToInsert);
+			gameBoard.replace(2580, 1, charToInsert);
+			break;
+		case 29:
+			gameBoard.replace(2574, 1, numToInsert);
+			gameBoard.replace(2575, 1, charToInsert);
+			break;
+		case 30:
+			gameBoard.replace(2569, 1, numToInsert);
+			gameBoard.replace(2570, 1, charToInsert);
+			break;
+		case 31:
+			gameBoard.replace(2564, 1, numToInsert);
+			gameBoard.replace(2565, 1, charToInsert);
+			break;
+		case 32:
+			gameBoard.replace(2559, 1, numToInsert);
+			gameBoard.replace(2560, 1, charToInsert);
+			break;
+		case 33:
+			gameBoard.replace(2554, 1, numToInsert);
+			gameBoard.replace(2555, 1, charToInsert);
+			break;
+		case 34:
+			gameBoard.replace(2549, 1, numToInsert);
+			gameBoard.replace(2550, 1, charToInsert);
+			break;
+		case 35:
+			gameBoard.replace(2544, 1, numToInsert);
+			gameBoard.replace(2545, 1, charToInsert);
+			break;
+		case 36:
+			gameBoard.replace(2539, 1, numToInsert);
+			gameBoard.replace(2540, 1, charToInsert);
+			break;
+		case 37:
+			gameBoard.replace(2534, 1, numToInsert);
+			gameBoard.replace(2535, 1, charToInsert);
+			break;
+		case 38:
+			gameBoard.replace(2529, 1, numToInsert);
+			gameBoard.replace(2530, 1, charToInsert);
+			break;
+		case 39:
+			gameBoard.replace(2524, 1, numToInsert);
+			gameBoard.replace(2525, 1, charToInsert);
+			break;
+		case 40:
+			gameBoard.replace(2519, 1, numToInsert);
+			gameBoard.replace(2520, 1, charToInsert);
+			break;
+		case 41:
+			gameBoard.replace(2514, 1, numToInsert);
+			gameBoard.replace(2515, 1, charToInsert);
+			break;
+		case 42:
+			gameBoard.replace(2509, 1, numToInsert);
+			gameBoard.replace(2510, 1, charToInsert);
+			break;
+		case 43:
+			gameBoard.replace(2346, 1, numToInsert);
+			gameBoard.replace(2347, 1, charToInsert);
+			break;
+		case 44:
+			gameBoard.replace(2183, 1, numToInsert);
+			gameBoard.replace(2184, 1, charToInsert);
+			break;
+		case 45:
+			gameBoard.replace(2020, 1, numToInsert);
+			gameBoard.replace(2021, 1, charToInsert);
+			break;
+		case 46:
+			gameBoard.replace(1857, 1, numToInsert);
+			gameBoard.replace(1858, 1, charToInsert);
+			break;
+		case 47:
+			gameBoard.replace(1694, 1, numToInsert);
+			gameBoard.replace(1695, 1, charToInsert);
+			break;
+		case 48:
+			gameBoard.replace(1531, 1, numToInsert);
+			gameBoard.replace(1532, 1, charToInsert);
+			break;
+		case 49:
+			gameBoard.replace(1368, 1, numToInsert);
+			gameBoard.replace(1369, 1, charToInsert);
+			break;
+		case 50:
+			gameBoard.replace(1205, 1, numToInsert);
+			gameBoard.replace(1206, 1, charToInsert);
+			break;
+		case 51:
+			gameBoard.replace(1045, 1, numToInsert);
+			gameBoard.replace(1046, 1, charToInsert);
+			break;
+		case 52:
+			gameBoard.replace(885, 1, numToInsert);
+			gameBoard.replace(886, 1, charToInsert);
+			break;
+		case 53:
+			gameBoard.replace(725, 1, numToInsert);
+			gameBoard.replace(726, 1, charToInsert);
+			break;
+		case 54:
+			gameBoard.replace(565, 1, numToInsert);
+			gameBoard.replace(566, 1, charToInsert);
+			break;
+		case 55:
+			gameBoard.replace(405, 1, numToInsert);
+			gameBoard.replace(406, 1, charToInsert);
+			break;
+		case 56:
+			gameBoard.replace(245, 1, numToInsert);
+			gameBoard.replace(246, 1, charToInsert);
+			break;
+		case 57:
+			gameBoard.replace(82, 1, numToInsert);
+			gameBoard.replace(83, 1, charToInsert);
+			break;
+		case 58:
+			gameBoard.replace(89, 1, numToInsert);
+			gameBoard.replace(90, 1, charToInsert);
+			break;
+		case 59:
+			gameBoard.replace(94, 1, numToInsert);
+			gameBoard.replace(95, 1, charToInsert);
+			break;
+		case 0:
+			gameBoard.replace(99, 1, numToInsert);
+			gameBoard.replace(100, 1, charToInsert);
+			break;
+		case 61:
+			gameBoard.replace(255, 1, numToInsert);
+			gameBoard.replace(256, 1, charToInsert);
+			break;
+		case 62:
+			gameBoard.replace(415, 1, numToInsert);
+			gameBoard.replace(416, 1, charToInsert);
+			break;
+		case 63:
+			gameBoard.replace(575, 1, numToInsert);
+			gameBoard.replace(576, 1, charToInsert);
+			break;
+		case 64:
+			gameBoard.replace(735, 1, numToInsert);
+			gameBoard.replace(736, 1, charToInsert);
+			break;
+		case 65:
+			gameBoard.replace(895, 1, numToInsert);
+			gameBoard.replace(896, 1, charToInsert);
+			break;
+		case 66:
+			gameBoard.replace(1055, 1, numToInsert);
+			gameBoard.replace(1056, 1, charToInsert);
+			break;
+		case 67:
+			gameBoard.replace(475, 1, numToInsert);
+			gameBoard.replace(476, 1, charToInsert);
+			break;
+		case 68:
+			gameBoard.replace(470, 1, numToInsert);
+			gameBoard.replace(471, 1, charToInsert);
+			break;
+		case 69:
+			gameBoard.replace(465, 1, numToInsert);
+			gameBoard.replace(466, 1, charToInsert);
+			break;
+		case 70:
+			gameBoard.replace(460, 1, numToInsert);
+			gameBoard.replace(461, 1, charToInsert);
+			break;
+		case 71:
+			gameBoard.replace(455, 1, numToInsert);
+			gameBoard.replace(456, 1, charToInsert);
+			break;
+		case 72:
+			gameBoard.replace(450, 1, numToInsert);
+			gameBoard.replace(451, 1, charToInsert);
+			break;
+		case 73:
+			gameBoard.replace(1597, 1, numToInsert);
+			gameBoard.replace(1598, 1, charToInsert);
+			break;
+		case 74:
+			gameBoard.replace(1760, 1, numToInsert);
+			gameBoard.replace(1761, 1, charToInsert);
+			break;
+		case 75:
+			gameBoard.replace(1923, 1, numToInsert);
+			gameBoard.replace(1924, 1, charToInsert);
+			break;
+		case 76:
+			gameBoard.replace(2086, 1, numToInsert);
+			gameBoard.replace(2087, 1, charToInsert);
+			break;
+		case 77:
+			gameBoard.replace(2249, 1, numToInsert);
+			gameBoard.replace(2250, 1, charToInsert);
+			break;
+		case 78:
+			gameBoard.replace(2412, 1, numToInsert);
+			gameBoard.replace(2413, 1, charToInsert);
+			break;
+		case 79:
+			gameBoard.replace(2189, 1, numToInsert);
+			gameBoard.replace(2190, 1, charToInsert);
+			break;
+		case 80:
+			gameBoard.replace(2194, 1, numToInsert);
+			gameBoard.replace(2195, 1, charToInsert);
+			break;
+		case 81:
+			gameBoard.replace(2199, 1, numToInsert);
+			gameBoard.replace(2200, 1, charToInsert);
+			break;
+		case 82:
+			gameBoard.replace(2204, 1, numToInsert);
+			gameBoard.replace(2205, 1, charToInsert);
+			break;
+		case 83:
+			gameBoard.replace(2209, 1, numToInsert);
+			gameBoard.replace(2210, 1, charToInsert);
+			break;
+		case 84:
+			gameBoard.replace(2214, 1, numToInsert);
+			gameBoard.replace(2215, 1, charToInsert);
+			break;
+		case -1:
+			gameBoard.replace(266, 1, numToInsert);
+			gameBoard.replace(267, 1, charToInsert);
+			break;
+		case -2:
+			gameBoard.replace(795, 1, numToInsert);
+			gameBoard.replace(796, 1, charToInsert);
+			break;
+		case -4:
+			gameBoard.replace(1863, 1, numToInsert);
+			gameBoard.replace(1864, 1, charToInsert);
+			break;
+		case -3:
+			gameBoard.replace(2402, 1, numToInsert);
+			gameBoard.replace(2403, 1, charToInsert);
+			break;
+		}
+
+	}
+
+	std::cout << gameBoard;
+}
 char gamePlayingFunction() {
 	std::cout << "How many players?\n";
 	std::cin >> playerCount;
@@ -964,38 +1394,42 @@ char gamePlayingFunction() {
 	boardGenerator();
 	char currentPlayingColor;
 	do {
+		displayBoard();
 		//Draws the card
 		//Takes input from user to allow the movement and decision of what piece to move
 		int cardDrawn = cardDraw();
 		bool didSwitch = false;
 		currentPlayingColor = playerColorTurn(cardDrawn);
-		std::cout << "\nYou drew a " << cardDrawn << std::endl;
-		std::cout << "\nYour color is " << currentPlayingColor << std::endl;
+		std::cout << "\nYou drew: " << cardDrawn << std::endl;
+		std::string color;
+		switch (currentPlayingColor) {
+		case 'r':
+			color = "Red";
+			break;
+		case 'b':
+			color = "Blue";
+			break;
+		case 'g':
+			color = "Green";
+			break;
+		case 'y':
+			color = "Yellow";
+			break;
+		}
+		std::cout << "Current Plaring Color is:  " << color << std::endl << std::endl;
+		
 		if (cardDrawn == 11) {
 			didSwitch = userSwapOrMove(currentPlayingColor);
 		}
 		if (didSwitch == false) {
 			playerMovement(playerMovementInput(currentPlayingColor), cardDrawn); //Will move pieces and checks for the kills and sliders
 		}
-
+		system("pause");
+		std::cout << std::endl;
+		system("CLS"); //Clears screen
 		//This for loop is simply here to test the game and see if it is running or not
 		//Will be deleted later
-
-		for (int x = 0; x < playerCount * 4; x++) {
-			if (x == 0) {
-				std::cout << "Red : ";
-			}
-			else if (x == 4) {
-				std::cout << "\nBlue : ";
-			}
-			else if (x == 8) {
-				std::cout << "\nGreen : ";
-			}
-			else if (x == 12) {
-				std::cout << "\nYellow : ";
-			}
-			std::cout << piecePosition[x] << ",   ";
-		}
+		
 	} while (checkIfPlayerWon(currentPlayingColor) == false);
 	return currentPlayingColor;
 }
